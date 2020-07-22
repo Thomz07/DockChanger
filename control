@@ -1,0 +1,9 @@
+Package: com.thomz.dockchanger
+Name: DockChanger
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm
+Description: Bring old dock to new but new dock to old
+Maintainer: Thomz
+Author: Thomz
+Section: Tweaks
