@@ -1,6 +1,8 @@
 #include "HRBRootListController.h"
 #include "../UIDevice+notchedDevice.m"
 
+HRBRootListController *controller;
+
 @implementation HRBRootListController
 
 - (NSArray *)specifiers {
@@ -17,6 +19,8 @@
 
 	UIBarButtonItem *applyButton = [[UIBarButtonItem alloc] initWithTitle:@"Respring" style:UIBarButtonItemStylePlain target:self action:@selector(respring:)];
     self.navigationItem.rightBarButtonItem = applyButton;
+
+	controller = self;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -127,8 +131,6 @@
 
 	if (self) {
 
-	
-
     }
     	return self;
 
@@ -158,7 +160,39 @@
 	marquee.marqueeEnabled = YES;
 	marquee.clipsToBounds = YES;
 
+	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showMessage:)];
+	tap.delegate = (id<UIGestureRecognizerDelegate>)self;
+	tap.numberOfTapsRequired = 1;
+
+	[marquee addGestureRecognizer:tap];
+
 	[self addSubview:marquee];
+}
+
+-(void)showMessage:(id)sender {
+
+	NSString *firstText;
+	NSString *secondText;
+
+	if([UIDevice.currentDevice isAnIpad] || ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatyDock.dylib"] || [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDockPlus13.dylib"]) || ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDock.dylib"] || [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDockPlus.dylib"])){
+		firstText = @"Invalid";
+		secondText = @"Your device is an iPad or FloatingDock is installed, the tweak will not work. ";
+	} else if([UIDevice.currentDevice isNotched]){
+		firstText = @"Notched";
+		secondText = @"Your device is notched, This means you will get the old Dock. ";
+	} else {
+		firstText = @"Non Notched";
+		secondText = @"Your device is not notched, This means you will get the new Dock. ";
+	}
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:firstText
+							message:secondText
+							preferredStyle:UIAlertControllerStyleAlert];
+
+		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel
+		handler:^(UIAlertAction * action) {}];
+
+		[alert addAction:defaultAction];
+		[controller presentViewController:alert animated:YES completion:nil];
 }
 
 @end

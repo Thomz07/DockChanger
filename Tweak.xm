@@ -2,6 +2,7 @@
 
 NSDictionary *settings;
 static BOOL enabled;
+static BOOL iconList;
 
 @interface SBDockView : UIView
 @property (nonatomic,retain) UIView * backgroundView;
@@ -13,6 +14,10 @@ static BOOL enabled;
 	%orig;
 	self.backgroundView.frame = CGRectMake(0,0,self.bounds.size.width,self.bounds.size.height + 10); // Change background view frame
 	self.backgroundView.layer.cornerRadius = 0; // Remove background view corner radius
+	if(iconList){
+		UIView *iconListView = [self valueForKey:@"iconListView"];
+		iconListView.frame = CGRectMake(iconListView.frame.origin.x,iconListView.frame.origin.y + 5,iconListView.bounds.size.width,iconListView.bounds.size.height);
+	}
 }
 %end
 
@@ -28,6 +33,7 @@ static BOOL enabled;
 %ctor {
 	settings = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.thomz.dockchanger"];
 	enabled = [([settings valueForKey:@"enabled"] ?: @(YES)) boolValue];
+	iconList = [([settings valueForKey:@"iconList"] ?: @(NO)) boolValue];
 	if(enabled){
 		if([UIDevice.currentDevice isNotched]){ // Check if device is notched or not
 			%init(Notched); 
