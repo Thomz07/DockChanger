@@ -19,6 +19,12 @@
     self.navigationItem.rightBarButtonItem = applyButton;
 }
 
+-(void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+
+	[[UISwitch appearanceWhenContainedInInstancesOfClasses:@[self.class]] setOnTintColor:[UIColor colorWithRed: 0.46 green: 0.50 blue: 0.60 alpha: 1.00]];
+}
+
 -(void)respring:(id)sender {
 
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Respring"

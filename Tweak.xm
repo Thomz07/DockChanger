@@ -1,32 +1,26 @@
 #import "UIDevice+notchedDevice.m"
 
-@interface SBDockView : UIView
-@end
-
 NSDictionary *settings;
 static BOOL enabled;
 
-%group Tweak
-%hook SBDockView
+@interface SBDockView : UIView
+@property (nonatomic,retain) UIView * backgroundView;
+@end
 
+%group Notched
+%hook SBDockView
 -(void)layoutSubviews {
 	%orig;
-	if([UIDevice.currentDevice isNotched]){ // Detect if the device is notched
-		UIView *backgroundView = [self valueForKey:@"backgroundView"]; // Get the background view of the Dock
-
-		backgroundView.frame = CGRectMake(0,0,self.bounds.size.width,self.bounds.size.height + 10); // Change background view frame
-		backgroundView.layer.cornerRadius = 0; // Remove background view corner radius
-	}
+	self.backgroundView.frame = CGRectMake(0,0,self.bounds.size.width,self.bounds.size.height + 10); // Change background view frame
+	self.backgroundView.layer.cornerRadius = 0; // Remove background view corner radius
 }
+%end
 
 %end
+%group NonNotched
 %hook UITraitCollection
 - (CGFloat)displayCornerRadius {
-	if(![UIDevice.currentDevice isNotched]){ // Detect if the device is notched
-		return 6; // This is based on a bug, if you don't return %orig here, it changes the Dock style for a reason that i don't know
-	} else {
-		return %orig; // This bug has been found by Nepeta or Kritanta i don't remember
-	}
+	return 6; // This is based on a bug, if you don't return %orig here, the dock will turn into the new Dock. This bug has been found by Nepeta a while ago
 }
 %end
 %end
@@ -35,6 +29,10 @@ static BOOL enabled;
 	settings = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.thomz.dockchanger"];
 	enabled = [([settings valueForKey:@"enabled"] ?: @(YES)) boolValue];
 	if(enabled){
-		%init(Tweak); // I'm not checking if the device is notched here because running UIDevice related things in the ctor can cause random crashes
+		if([UIDevice.currentDevice isNotched]){ // Check if device is notched or not
+			%init(Notched); 
+		} else {
+			%init(NonNotched);
+		}
 	}
 }
