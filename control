@@ -3,7 +3,8 @@ Name: DockChanger
 Depends: mobilesubstrate
 Version: 1.0
 Architecture: iphoneos-arm
-Description: Bring old dock to new but new dock to old
+Description: Bring old dock to new and new dock to old
 Maintainer: Thomz
 Author: Thomz
 Section: Tweaks
+Icon: file:///Library/PreferenceBundles/DockChanger.bundle/iconFullSize.png
