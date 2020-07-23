@@ -139,34 +139,36 @@ HRBRootListController *controller;
 -(void)layoutSubviews {
 	[super layoutSubviews];
 
-	MPUMarqueeView *marquee = [[MPUMarqueeView alloc] initWithFrame:CGRectMake(5,0,self.bounds.size.width,self.bounds.size.height)];
-	[marquee setFadeEdgeInsets:UIEdgeInsetsMake(0,10,0,10)];
+	if(!self.marquee){
+		self.marquee = [[MPUMarqueeView alloc] initWithFrame:CGRectMake(5,0,self.bounds.size.width,self.bounds.size.height)];
+		[self.marquee setFadeEdgeInsets:UIEdgeInsetsMake(0,10,0,10)];
 
-	UILabel *label = [[UILabel alloc]init];
-	
-	if([UIDevice.currentDevice isAnIpad] || ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatyDock.dylib"] || [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDockPlus13.dylib"]) || ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDock.dylib"] || [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDockPlus.dylib"])){
-		label.text = @"Your device is an iPad or FloatingDock is installed, the tweak will not work. ";
-	} else if([UIDevice.currentDevice isNotched]){
-		label.text = @"Your device is notched, This means you will get the old Dock. ";
-	} else {
-		label.text = @"Your device is not notched, This means you will get the new Dock. ";
+		UILabel *label = [[UILabel alloc]init];
+		
+		if([UIDevice.currentDevice isAnIpad] || ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatyDock.dylib"] || [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDockPlus13.dylib"]) || ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDock.dylib"] || [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/DynamicLibraries/FloatingDockPlus.dylib"])){
+			label.text = @"Your device is an iPad or FloatingDock is installed, the tweak will not work. ";
+		} else if([UIDevice.currentDevice isNotched]){
+			label.text = @"Your device is notched, This means you will get the old Dock. ";
+		} else {
+			label.text = @"Your device is not notched, This means you will get the new Dock. ";
+		}
+
+		//CGSize size = [label sizeThatFits:CGSizeMake(label.frame.size.width, FLT_MAX)];
+		self.marquee.contentSize = CGSizeMake(label.intrinsicContentSize.width,self.bounds.size.height);
+		label.frame = CGRectMake(0,0,label.intrinsicContentSize.width,self.bounds.size.height);
+
+		[self.marquee.contentView addSubview:label];
+		self.marquee.marqueeEnabled = YES;
+		self.marquee.clipsToBounds = YES;
+
+		UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showMessage:)];
+		tap.delegate = (id<UIGestureRecognizerDelegate>)self;
+		tap.numberOfTapsRequired = 1;
+
+		[self.marquee addGestureRecognizer:tap];
+
+		[self addSubview:self.marquee];
 	}
-
-	//CGSize size = [label sizeThatFits:CGSizeMake(label.frame.size.width, FLT_MAX)];
-	marquee.contentSize = CGSizeMake(label.intrinsicContentSize.width,self.bounds.size.height);
-	label.frame = CGRectMake(0,0,label.intrinsicContentSize.width,self.bounds.size.height);
-
-	[marquee.contentView addSubview:label];
-	marquee.marqueeEnabled = YES;
-	marquee.clipsToBounds = YES;
-
-	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showMessage:)];
-	tap.delegate = (id<UIGestureRecognizerDelegate>)self;
-	tap.numberOfTapsRequired = 1;
-
-	[marquee addGestureRecognizer:tap];
-
-	[self addSubview:marquee];
 }
 
 -(void)showMessage:(id)sender {

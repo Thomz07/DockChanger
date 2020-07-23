@@ -38,7 +38,7 @@
 			<key>key</key>
 			<string>iconList</string>
 			<key>label</key>
-			<string>Move icons to fit</string>
+			<string>Move icons to center</string>
 			<key>sublabel</key>
 			<string>This is for notched devices only</string>
 		</dict>

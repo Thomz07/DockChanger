@@ -12,11 +12,15 @@ static BOOL iconList;
 %hook SBDockView
 -(void)layoutSubviews {
 	%orig;
-	self.backgroundView.frame = CGRectMake(0,0,self.bounds.size.width,self.bounds.size.height + 10); // Change background view frame
+	self.backgroundView.frame = CGRectMake(0,0,self.bounds.size.width,self.bounds.size.height + 1.5); // Change background view frame
 	self.backgroundView.layer.cornerRadius = 0; // Remove background view corner radius
 	if(iconList){
 		UIView *iconListView = [self valueForKey:@"iconListView"];
-		iconListView.frame = CGRectMake(iconListView.frame.origin.x,iconListView.frame.origin.y + 5,iconListView.bounds.size.width,iconListView.bounds.size.height);
+		iconListView.translatesAutoresizingMaskIntoConstraints = NO;
+		[iconListView.centerYAnchor constraintEqualToAnchor:self.backgroundView.centerYAnchor].active = YES;
+		[iconListView.centerXAnchor constraintEqualToAnchor:self.backgroundView.centerXAnchor].active = YES;
+		[iconListView.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+		[iconListView.widthAnchor constraintEqualToAnchor:self.backgroundView.widthAnchor].active = YES;
 	}
 }
 %end

@@ -23,6 +23,7 @@
 @end
 
 @interface NotchCheckCell : PSTableCell
+@property (nonatomic,strong) MPUMarqueeView *marquee;
 @end
 
 @interface NSTask : NSObject
