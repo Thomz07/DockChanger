@@ -17,7 +17,7 @@ static BOOL iconList;
 	if(iconList){
 		UIView *iconListView = [self valueForKey:@"iconListView"];
 		iconListView.translatesAutoresizingMaskIntoConstraints = NO;
-		[iconListView.centerYAnchor constraintEqualToAnchor:self.backgroundView.centerYAnchor].active = YES;
+		[iconListView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active = YES;
 		[iconListView.centerXAnchor constraintEqualToAnchor:self.backgroundView.centerXAnchor].active = YES;
 		[iconListView.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
 		[iconListView.widthAnchor constraintEqualToAnchor:self.backgroundView.widthAnchor].active = YES;
