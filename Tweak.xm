@@ -3,9 +3,18 @@
 NSDictionary *settings;
 static BOOL enabled;
 static BOOL iconList;
+static BOOL dockBg;
 
 @interface SBDockView : UIView
 @property (nonatomic,retain) UIView * backgroundView;
+@end
+
+@interface SBWallpaperEffectView : UIView
+@property (nonatomic,retain) UIView *blurView;
+@end
+
+@interface MTMaterialView : UIView
+@property (assign,nonatomic) double weighting;
 @end
 
 %group Notched
@@ -21,6 +30,14 @@ static BOOL iconList;
 		[iconListView.centerXAnchor constraintEqualToAnchor:self.backgroundView.centerXAnchor].active = YES;
 		[iconListView.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
 		[iconListView.widthAnchor constraintEqualToAnchor:self.backgroundView.widthAnchor].active = YES;
+	}
+
+	if([self.backgroundView respondsToSelector:@selector(_materialLayer)]){
+		((MTMaterialView *)self.backgroundView).weighting = dockBg ? 0 : 1;
+	}
+
+	if([self.backgroundView respondsToSelector:@selector(blurView)]){
+		((SBWallpaperEffectView *)self.backgroundView).blurView.hidden = dockBg ? YES : NO;
 	}
 }
 %end
@@ -38,6 +55,7 @@ static BOOL iconList;
 	settings = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.thomz.dockchanger"];
 	enabled = [([settings valueForKey:@"enabled"] ?: @(YES)) boolValue];
 	iconList = [([settings valueForKey:@"iconList"] ?: @(NO)) boolValue];
+	dockBg = [([settings valueForKey:@"dockBg"] ?: @(NO)) boolValue];
 	if(enabled){
 		if([UIDevice.currentDevice isNotched]){ // Check if device is notched or not
 			%init(Notched); 
